@@ -56,14 +56,20 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     environment.define(stmt.name.lexeme, value);
     return null;
   }
+
   @Override
   public Void visitBlockStmt(Stmt.Block stmt){
+
     executeBlock(stmt.statements, new Environment(environment));
     return null;
+
   }
+
   //Expression Visitor
+
   @Override
   public  Object visitLogicalExpr(Expr.Logical expr){
+
     Object left = evaluate(expr.left);
     if(expr.operator.type == TokenType.OR){
       if(isTruthy(left)) return left;
@@ -71,16 +77,22 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       if(!isTruthy(left)) return left;
     }
     return evaluate(expr.right);
+
   }
+
   @Override
   public Object visitAssignExpr(Expr.Assign expr){
+
     Object value =  evaluate(expr.value);
     environment.assign(expr.name, value);
     return value;
+
   }
   @Override
   public Object visitVariableExpr(Expr.Variable expr){
+
     return environment.get(expr.name);
+
   }
 
   @Override
@@ -104,7 +116,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
           checkNumberOperand(expr.operator, right);
           return -(double)right;
     }
-
+    
     return null;
   }
 
@@ -177,13 +189,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     return a.equals(b);
   }
   //helper
-  private Object evaluate(Expr expr){
-    return expr.accept(this);
-  }
   private void execute(Stmt stmt){
+
     stmt.accept(this);
+
   }
+
   private void executeBlock(List<Stmt> statements, Environment environment){
+
     Environment previous = this.environment;
     try{
       this.environment = environment;
@@ -194,7 +207,16 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }finally{
       this.environment = previous;
     }
+
   }
+
+  private Object evaluate(Expr expr) {
+
+    return expr.accept(this);
+
+  }
+
+
 
   private String stringify(Object object){
     if(object == null) return "nil";
