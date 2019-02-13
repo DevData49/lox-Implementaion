@@ -11,7 +11,7 @@ class Scanner {
   private final String source;
   private final List<Token> tokens =  new ArrayList<>();
   private static final Map<String, TokenType> keywords;
-
+  //Mapping all keywords
   static {
     keywords =  new HashMap<>();
     keywords.put("and",    AND);
@@ -136,23 +136,31 @@ class Scanner {
 
     addToken(NUMBER, Double.parseDouble(source.substring(start,current)));
   }
+  //helper methods
 
   private boolean match(char expected){
-    if(isAtEnd()) return false;
-    if(source.charAt(current) != expected) return false;
+
+    if(peek() != expected) return false;
 
     current++;
     return true;
-  }
-  private char peek(){
-    if(isAtEnd()) return '\0';
 
-    return source.charAt(current);
   }
+
+  private char peek(){
+
+    if(isAtEnd()) return '\0';
+    return source.charAt(current);
+
+  }
+
   private char peekNext(){
+
     if(current + 1 >= source.length()) return '\0';
     return source.charAt(current + 1);
+
   }
+  
   private boolean isAlpha(char c){
     return (c >= 'a' && c <= 'z') ||
            (c >= 'A' && c <= 'Z') ||
