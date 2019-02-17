@@ -26,6 +26,7 @@ class Parser{
 
    private Stmt declaration() {
       try{
+        if(match(CLASS)) return classDeclaration();
         if(match(FUN)) return function("function");
         if(match(VAR)) return varDeclaration();
 
@@ -55,6 +56,20 @@ class Parser{
 
       consume(SEMICOLON,"Expect ';' after return value.");
       return new Stmt.Return(keyword, value);
+    }
+
+    private Stmt classDeclaration(){
+      Token name = consume(IDENTIFIER,"Expect className.");
+      consume(LEFT_BRACE,"Expect '{' before class body.");
+
+      List<Stmt.Function> methods = new ArrayList<>();
+      while(!check(RIGHT_BRACE) && !isAtEnd()){
+        methods.add(function("method"))
+      }
+
+      consume(RIGHT_BRACE, "Expect '}' after class Body.");
+
+      return new Stmt.Class(name, methods);
     }
 
     private Stmt.Function function(String kind){
