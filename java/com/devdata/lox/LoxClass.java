@@ -14,12 +14,13 @@ class LoxClass implements LoxCallable{
 
   LoxFunction findMethod(LoxInstance instance, String name){
     if(methods.containsKey(name)){
-      return methods.get(name);
+      return methods.get(name).bind(instance);
     }
 
     return null;
 
   }
+
   @Override
   public String toString(){
     return name;
