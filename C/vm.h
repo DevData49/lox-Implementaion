@@ -2,11 +2,16 @@
 #define lox_vm_h
 
 #include "chunk.h"
+#include "Value.h"
+
+#define STACK_MAX 256
 
 typedef struct{
   Chunk* chunk;
   uint8_t* ip;
-}VM;
+  Value stack[STACK_MAX];
+  Value* stackTop;
+} VM;
 
 typedef enum{
   INTERPRET_OK,
@@ -17,5 +22,7 @@ typedef enum{
 void intitVM();
 void freeVM();
 InterpretResult interpret(Chunk* chunk);
+void push(Value Value);
+Value pop();
 
 #endif
