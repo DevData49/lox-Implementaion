@@ -71,17 +71,17 @@ static InterpretResult run() {
     #undef BINARY_OP
   }
 
-  InterpretResult interpret(const char* source){
-    compile(source);
-    return INTERPRET_OK;
-  }
+InterpretResult interpret(const char* source){
+  compile(source);
+  return INTERPRET_OK;
+}
 
-  void push(Value value){
-    *vm.stackTop = value;
-    vm.stackTop++;
-  }
+void push(Value value){
+  *vm.stackTop = value;
+  vm.stackTop++;
+}
 
-  Value pop(){
-    vm.stackTop--;
-    return *vm.stackTop;
-  }
+Value pop(){
+  vm.stackTop--;
+  return *vm.stackTop;
+}
