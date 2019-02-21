@@ -65,24 +65,23 @@ static InterpretResult run() {
 
     }
 
-    InterpretResult interpret(Chunk* chunk){
-      vm.chunk = chunk;
-      vm.ip = vm.chunk->code;
-      return run();
-    }
+    #undef READ_BYTE
+    #undef READ_CONSTANT
+    #undef BINARY_OP
+  }
 
-    void push(Value value){
-      *vm.stackTop = value;
-      vm.stackTop++;
-    }
+  InterpretResult interpret(Chunk* chunk){
+    vm.chunk = chunk;
+    vm.ip = vm.chunk->code;
+    return run();
+  }
 
-    Value pop(){
-      vm.stackTop--;
-      return *vm.stackTop;
-    }
+  void push(Value value){
+    *vm.stackTop = value;
+    vm.stackTop++;
+  }
 
-
-  #undef READ_BYTE
-  #undef READ_CONSTANT
-  #undef BINARY_OP
-}
+  Value pop(){
+    vm.stackTop--;
+    return *vm.stackTop;
+  }
