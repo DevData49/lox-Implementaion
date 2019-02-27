@@ -23,7 +23,9 @@ static Chunk* currenChunk(){
 static void errorAt(Token* token, const char* message){
   if(parser.panicMode) return;
   parser.panicMode = true;
+
   fprintf(stderr, "[line %d] Error", token->line );
+
   if(token->type == TOKEN_EOF) {
     fprintf(stderr, "at end" );
   } else if (token->type == TOKEN_ERROR) {
@@ -41,7 +43,7 @@ static void error(const char* message){
 }
 
 static void errorAtCurrent(const char* message){
-  errorAt(&parser.current, message)
+  errorAt(&parser.current, message);
 }
 
 
@@ -57,17 +59,16 @@ static void advance(){
   }
 }
 
-static void consume(TokenType token, const char* message){
+static void consume(TokenType type, const char* message){
   if(parser.current.type == type){
     advance();
     return;
   }
+  errorAtCurrent(message);
+}
 
 static void emitByte(uint8_t byte) {
   writeChunk(currenChunk(), byte, parser.previous.line);
-}
-
-  errorAtCurrent(message);
 }
 
 static void emitBytes(uint8_t byte1, uint8_t byte2) {
@@ -79,10 +80,19 @@ static void emitReturn(){
   emitByte(OP_RETURN);
 }
 
-void compile(const char* source, Chunk* chunk){
+static void endCompiler(){
+  emitReturn();
+}
+
+void expression(){
+  
+}
+
+bool compile(const char* source, Chunk* chunk){
   initScanner(source);
 
   compilingChunk = chunk;
+
   parser.hadError = false;
   parser.panicMode = false;
 
