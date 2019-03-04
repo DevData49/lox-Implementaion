@@ -26,5 +26,8 @@ void freeValueArray(ValueArray* array){
 }
 
 void printValue(Value value){
-  printf("%g",value );
+  switch (value.type) {
+    case VAL_NUMBER : printf("%g",AS_NUMBER(value));
+  }
+
 }

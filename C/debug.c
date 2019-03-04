@@ -27,9 +27,9 @@ int disassembleInstruction(Chunk* chunk, int offset){
   printf("%04d", offset);
 
   if(offset > 0 && chunk->lines[offset] == chunk->lines[offset-1]){
-    printf("   |");
+    printf("   | ");
   } else {
-    printf("%4ds ",chunk->lines[offset] );
+    printf("%4d ",chunk->lines[offset] );
   }
 
   uint8_t instruction = chunk->code[offset];
@@ -43,7 +43,7 @@ int disassembleInstruction(Chunk* chunk, int offset){
     case OP_MULTIPLY:
       return simpleInstruction("OP_MULTIPLY", offset);
     case OP_DIVIDE:
-      return simpleInstruction("OP_DIVIDE", offset);       
+      return simpleInstruction("OP_DIVIDE", offset);
     case OP_NEGATE:
       return simpleInstruction("OP_NEGATE", offset);
     case OP_RETURN:
