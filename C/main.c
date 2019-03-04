@@ -23,7 +23,7 @@ static char* readFile(const char* path){
   FILE* file = fopen(path,"rb");
 
   if(file == NULL) {
-    fprintf((stderr, "Could not open file \"%s\"\n"),path);
+    fprintf(stderr, "Could not open file \"%s\"\n",path);
     exit(74);
   }
 
@@ -38,7 +38,7 @@ static char* readFile(const char* path){
   }
 
   size_t bytesRead = fread(buffer, sizeof(char), fileSize, file);
-  if(bytesRead < file){
+  if(bytesRead < fileSize){
     fprintf(stderr, "Could not read file \"%s\"\n", path);
     exit(74);
   }
