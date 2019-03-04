@@ -5,6 +5,10 @@
 #include "compiler.h"
 #include "scanner.h"
 
+#ifdef DEBUG_PRINT_CODE
+#include "debug.h"
+#endif
+
 typedef struct {
   Token current;
   Token previous;
@@ -117,7 +121,13 @@ static void emitConstant(Value value){
 }
 
 static void endCompiler(){
+
   emitReturn();
+  #ifdef DEBUG_PRINT_CODE
+  if(!parser.hadError){
+    disassembleChunk(currenChunk(),"code");
+  }
+  #endif
 }
 
 static void expression();
@@ -136,14 +146,14 @@ static void binary() {
   //Emit the operator instruction {
   switch(operatorType){
     case TOKEN_PLUS:  emitByte(OP_ADD); break;
-    case TOKEN_MINUS: emitByte(OP_MINUS); break;
+    case TOKEN_MINUS: emitByte(OP_SUBTRACT); break;
     case TOKEN_STAR:  emitByte(OP_MULTIPLY); break;
     case TOKEN_SLASH: emitByte(OP_DIVIDE); break;
     default:
       return;
   }
 }
-}
+
 
 static void grouping(){
   expression();
@@ -217,10 +227,17 @@ static void parsePrecedence(Precedence precedence){
   advance();
   ParseFn prefixRule = getRule(parser.previous.type)->prefix;
   if(prefixRule == NULL){
-    error("Expect expression")
+    error("Expect expression");
     return;
   }
   prefixRule();
+
+  while(precedence <= getRule(parser.current.type)->precedence){
+    advance();
+    ParseFn infixRule = getRule(parser.previous.type)->infix;
+    if(infixRule != NULL)
+    infixRule();
+  }
 }
 
 static ParseRule* getRule(TokenType type){
