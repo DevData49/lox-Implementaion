@@ -6,12 +6,12 @@
 #include "table.h"
 #include "value.h"
 
-#define TABLE_MAX_LOAD 0.75;
+#define TABLE_MAX_LOAD 0.75
 
 void initTable(Table* table){
   table->count = 0;
   table->capacity = 0;
-  table->entries = NULL:
+  table->entries = NULL;
 }
 
 void freeTable(Table* table){
@@ -37,7 +37,7 @@ static Entry* findEntry(Entry* entries, int capacity, ObjString* key) {
 
     } else if(entry->key == key){
       //we found the key
-      return entry
+      return entry;
     }
 
     index = (index+1) % capacity;
@@ -110,7 +110,7 @@ bool tableDelete(Table* table, ObjString* key) {
 }
 
 void tableAddAll(Table* from, Table* to){
-  for(int i=0;i<from.capacity;i++){
+  for(int i=0;i<from->capacity;i++){
     Entry* entry = &from->entries[i];
     if(entry->key != NULL){
       tableSet(to, entry->key, entry->value);
@@ -121,7 +121,7 @@ void tableAddAll(Table* from, Table* to){
 ObjString* tableFindString(Table* table, const char* chars, int length, uint32_t hash){
 
   //If the table is empty, we definitely won't find it
-  if(table->entries == NULL) return;
+  if(table->entries == NULL) return NULL;
 
   uint32_t index = hash % table->capacity;
 
