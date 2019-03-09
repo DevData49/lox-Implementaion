@@ -146,6 +146,9 @@ static void declaration();
 static ParseRule* getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
 
+static uint8_t identifierConstant(Token* name){
+  return makeConstant(OBJ_VAL(copyString(name->start,name->length)));
+}
 
 static void binary() {
   //Remember the token
@@ -198,6 +201,16 @@ static void string(){
   emitConstant(OBJ_VAL(copyString(parser.previous.start + 1,parser.previous.length-2)));
 }
 
+static void namedVariable(Token name){
+  int arg = identifierConstant(&name);
+
+  emitBytes(OP_GET_GLOBAL, (uint8_t)arg);
+}
+
+static void variable(){
+  namedVariable(parser.previous);
+}
+
 static void unary(){
   TokenType operatorType = parser.previous.type;
 
@@ -233,23 +246,23 @@ ParseRule rules[] = {
   { NULL,     binary,  PREC_COMPARISON }, // TOKEN_GREATER_EQUAL
   { NULL,     binary,  PREC_COMPARISON }, // TOKEN_LESS
   { NULL,     binary,  PREC_COMPARISON }, // TOKEN_LESS_EQUAL
-  { NULL,     NULL,    PREC_NONE },       // TOKEN_IDENTIFIER
+  { variable,     NULL,    PREC_NONE },       // TOKEN_IDENTIFIER
   { string,   NULL,    PREC_NONE },       // TOKEN_STRING
   { number,   NULL,    PREC_NONE },       // TOKEN_NUMBER
   { NULL,     NULL,    PREC_AND },        // TOKEN_AND
   { NULL,     NULL,    PREC_NONE },       // TOKEN_CLASS
   { NULL,     NULL,    PREC_NONE },       // TOKEN_ELSE
-  { literal,  NULL,    PREC_NONE },    // TOKEN_FALSE
+  { literal,  NULL,    PREC_NONE },       // TOKEN_FALSE
   { NULL,     NULL,    PREC_NONE },       // TOKEN_FOR
   { NULL,     NULL,    PREC_NONE },       // TOKEN_FUN
   { NULL,     NULL,    PREC_NONE },       // TOKEN_IF
-  { literal,  NULL,    PREC_NONE },    // TOKEN_NIL
+  { literal,  NULL,    PREC_NONE },       // TOKEN_NIL
   { NULL,     NULL,    PREC_OR },         // TOKEN_OR
   { NULL,     NULL,    PREC_NONE },       // TOKEN_PRINT
   { NULL,     NULL,    PREC_NONE },       // TOKEN_RETURN
   { NULL,     NULL,    PREC_NONE },       // TOKEN_SUPER
   { NULL,     NULL,    PREC_NONE },       // TOKEN_THIS
-  { literal,  NULL,    PREC_NONE },    // TOKEN_TRUE
+  { literal,  NULL,    PREC_NONE },       // TOKEN_TRUE
   { NULL,     NULL,    PREC_NONE },       // TOKEN_VAR
   { NULL,     NULL,    PREC_NONE },       // TOKEN_WHILE
   { NULL,     NULL,    PREC_NONE },       // TOKEN_ERROR
@@ -274,9 +287,7 @@ static void parsePrecedence(Precedence precedence){
   }
 }
 
-static uint8_t identifierConstant(Token* name){
-  return makeConstant(OBJ_VAL(copyString(name->start,name->length)));
-}
+
 
 static uint8_t parseVariable(const char* errorMessage){
   consume(TOKEN_IDENTIFIER,errorMessage);
